@@ -14,7 +14,7 @@ module.exports = {
      * output file name
      * creates file in output/{filename}.xlsx
      */
-    export_filename: "test",
+    export_filename: "product-list",
 
     /**
      * should be number representation of the "Parts Number" column
