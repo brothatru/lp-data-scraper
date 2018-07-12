@@ -28,5 +28,7 @@ Different product categories return different specs, so if the spec doesn't alre
 Here's a list of resources that were helpful to me in this project:
 * [Scraping data in 3 minutes with Javascript](https://medium.com/data-scraper-tips-tricks/scraping-data-with-javascript-in-3-minutes-8a7cf8275b31)
 * [Cheerio.js](https://github.com/cheeriojs/cheerio)
+* [Use JSDOM to scrape dynamically loaded content](https://github.com/jsdom/jsdom)
 * [Reading Excel File Using JavaScript](https://codoid.com/reading-excel-file-using-javascript/)
+* [Export data as csv](https://halistechnology.com/2015/05/28/use-javascript-to-export-your-data-as-csv/)
 
