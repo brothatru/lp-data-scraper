@@ -4,13 +4,14 @@
   "description": "Scrape data from lawsonproducts.com",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node index.js | gnomon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "mike trieu",
   "license": "ISC",
   "dependencies": {
     "exceljs": "^1.5.1",
+    "gnomon": "^1.5.0",
     "jsdom": "^11.11.0"
   }
 }
