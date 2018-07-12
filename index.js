@@ -31,58 +31,67 @@ const PRODUCT_ID_COLUMN = 19;
  */
 const workbook = new Excel.Workbook();
 const scraper = new DataScraper();
+const products = [];
+const columnHeaders = [];
 
-/**
- * @async
- *
- */
-// (async function(){
-//     let content = await scraper.getProductInfoById('5P623')
-//     // let content = await scraper.getProductInfoById(8699)
-//     // let content = await scraper.getProductInfoById(3564)
-//     console.log(content)
-// })()
+(async function main(){
+    await workbook.xlsx.readFile(filename)
+    const worksheet = workbook.getWorksheet(1)
+    let rowCount = worksheet.lastRow.number
 
-// read excel file
-workbook.xlsx.readFile(filename)
-    .then(function() {
-
-        const worksheet = workbook.getWorksheet(1); // or getWorksheet("Wall Inventory")
-
-        worksheet.eachRow(function(row, rowNumber) {
-            let productId = row.getCell(PRODUCT_ID_COLUMN).value;
-            if (productId) {
-                if (typeof productId === 'object' && typeof productId.result === 'number') {
-                    // console.log(`${typeof productId} ${productId}`)
-                    productId = productId.result;
+    for (let i = 1; i <= rowCount; i++) {
+        const row = worksheet.getRow(i)
+        if (i >= 10) break
+        let productId = row.getCell(PRODUCT_ID_COLUMN).value;
+        if (productId && productId !== '' && productId !== 'Part Number') {
+            if (typeof productId === 'object') {
+                if (typeof productId.result !== 'undefined') {
+                    productId = productId.result
+                } else if (typeof productId.text !== 'undefined') {
+                    productId = productId.text;
                 }
-
-                /**
-                 * @todo
-                 * Scrape Data Here using product id
-                 */
-                console.log(`Scraping data for part # ${productId}`)
-                (async function () {
-                    let product = await scraper.getProductInfoById(productId)
-                    console.log(product)
-
-                    /**
-                     * @todo
-                     * parse through product object keys
-                     * check if column exists in worksheet
-                     * if not, add column
-                     * need to set unique key for each column
-                     * ie. replace spaces with underscore, lowercase, etc.
-                     */
-
-                     /**
-                      * @todo
-                      * add row using unique column key
-                      * (don't use the actual header name)
-                      */
-                })()
             }
-        })
-    });
+            console.log(i, productId)
 
+            // scrape data using product id
+            let product = await scraper.getProductInfoById(productId)
+
+            if (product) {
+                const rowToInsert = {}
+                for (let header in product) {
+                    // sanitize column key
+                    let key = header.trim().replace(/ /g, '_').toLowerCase()
+                    if (key == '') continue
+                    // add column header, if it doesn't exist
+                    if (!columnHeaders.map(column => column.key).includes(key)) {
+                        const column = {
+                            header: header.trim(),
+                            key
+                        }
+                        columnHeaders.push(column)
+                    }
+                    rowToInsert[key] = product[header]
+                }
+                products.push(rowToInsert)
+            }
+        }
+    }
+
+    console.log(products)
+    console.log(columnHeaders)
+
+    /**
+     * @todo
+     * add row using unique column key
+     * (don't use the actual header name)
+     */
+    // const outfile = new Excel.Workbook();
+    // const sheet = outfile.addWorksheet('Product List')
+    // outfile.columns = columnHeaders
+    // try {
+    //     sheet.addRow()
+    // }
+
+
+})()
 
