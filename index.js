@@ -1,4 +1,5 @@
 const Excel = require('exceljs')
+const fs = require('fs')
 const config = require('./config')
 const DataScraper = require('./src/data-scraper/data-scraper')
 
@@ -92,6 +93,7 @@ filename = filename || config.import_filepath;
         for (let row of products) {
             sheet.addRow(row)
         }
+        if (!fs.existsSync('output')) fs.mkdirSync('output')
         await outfile.xlsx.writeFile(`output/${config.export_filename}.xlsx`)
         console.log(`File created in output/${config.export_filename}.xlsx !`)
     } catch (e) {
